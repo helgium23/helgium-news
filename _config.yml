@@ -1,0 +1,6 @@
+title: Trends Blog
+description: Auto-published trending topics with images
+theme: minima
+plugins:
+  - jekyll-feed
+markdown: kramdown
