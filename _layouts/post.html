@@ -1,18 +1,52 @@
 ---
 layout: default
 ---
-<article class="post">
+<article class="post" itemscope itemtype="https://schema.org/NewsArticle">
   <header class="post__header">
-    <h1>{{ page.title }}</h1>
+    <h1 class="post__title" itemprop="headline">{{ page.title }}</h1>
     <div class="post__meta">
-      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%b %-d, %Y" }}</time>
-      {%- if page.source -%} • <a href="{{ page.source }}" target="_blank" rel="noopener">Sumber</a>{%- endif -%}
+      <time itemprop="datePublished" datetime="{{ page.date | date_to_xmlschema }}">
+        {{ page.date | date: "%b %-d, %Y" }}
+      </time>
+      {%- if page.source -%}
+        • <a href="{{ page.source }}" rel="noopener nofollow" target="_blank">Sumber</a>
+      {%- endif -%}
     </div>
-    {%- if page.image -%}
-      <img class="post__hero" src="{{ page.image }}" alt="{{ page.title | escape }}">
-    {%- endif -%}
+
+    {% if page.image %}
+      <img class="post__hero" src="{{ page.image }}" alt="{{ page.title | escape }}" itemprop="image">
+    {% endif %}
   </header>
-  <div class="post__content">
+
+  <div class="post__content" itemprop="articleBody">
     {{ content }}
   </div>
+
+  <meta itemprop="mainEntityOfPage" content="{{ site.url }}{{ site.baseurl }}{{ page.url }}">
+  <meta itemprop="dateModified" content="{{ page.date | date_to_xmlschema }}">
+  <meta itemprop="author" content="{{ site.title | default: 'Trends Blog' }}">
+
+  <nav class="post__pager" aria-label="Post Navigation" style="margin:28px 0;">
+    {% if page.previous %}
+      <a class="card__cta" href="{{ page.previous.url | relative_url }}">← {{ page.previous.title }}</a>
+    {% endif %}
+    {% if page.next %}
+      <a class="card__cta" style="float:right" href="{{ page.next.url | relative_url }}">{{ page.next.title }} →</a>
+    {% endif %}
+  </nav>
 </article>
+
+<!-- JSON-LD NewsArticle (untuk rich results) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": {{ page.title | jsonify }},
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "dateModified": "{{ page.date | date_to_xmlschema }}",
+  "mainEntityOfPage": "{{ site.url }}{{ site.baseurl }}{{ page.url }}",
+  "image": [{% if page.image %}{{ page.image | jsonify }}{% else %}""{% endif %}],
+  "author": { "@type": "Organization", "name": {{ site.title | default: "Trends Blog" | jsonify }} },
+  "publisher": { "@type": "Organization", "name": {{ site.title | default: "Trends Blog" | jsonify }} }
+}
+</script>
