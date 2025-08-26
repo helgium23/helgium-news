@@ -1,18 +1,82 @@
-<!DOCTYPE html>
-<html lang="id">
+<!doctype html>
+<html lang="{{ site.lang | default: 'id' }}">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>{{ page.title | default: site.title }}</title>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <title>
+    {% if page.title %}{{ page.title | strip }} | {% endif %}{{ site.title | default: "Trends Blog" }}
+  </title>
+
+  {%- assign desc = page.excerpt | default: site.description | default: site.title -%}
+  <meta name="description" content="{{ desc | strip_html | normalize_whitespace | truncate: 160 }}">
+
+  {%- comment -%}
+  Canonical URL: site.url + site.baseurl + page.url
+  Pastikan _config.yml punya:
+    url: "https://helgium23.github.io"
+    baseurl: "/helgium-news"
+  {%- endcomment -%}
+  <link rel="canonical" href="{{ site.url }}{{ site.baseurl }}{{ page.url | replace: 'index.html','' }}">
+
+  <!-- Icons (opsional; letakkan file di /assets/img/) -->
+  <link rel="icon" href="{{ '/assets/img/favicon.png' | relative_url }}">
+
+  <!-- CSS -->
+  <link rel="preload" as="style" href="{{ '/assets/css/news.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/news.css' | relative_url }}">
+
+  <!-- Resource hints -->
+  <link rel="dns-prefetch" href="//images.unsplash.com">
+  <link rel="dns-prefetch" href="//pixabay.com">
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+  <link rel="preconnect" href="https://pixabay.com" crossorigin>
+
+  <!-- Feeds & sitemap -->
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ site.url }}{{ site.baseurl }}/feed.xml">
+  <link rel="sitemap" type="application/xml" href="{{ site.url }}{{ site.baseurl }}/sitemap.xml">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}">
+  <meta property="og:title" content="{{ page.title | default: site.title }}">
+  <meta property="og:description" content="{{ desc | strip_html | normalize_whitespace | truncate: 160 }}">
+  <meta property="og:url" content="{{ site.url }}{{ site.baseurl }}{{ page.url | replace: 'index.html','' }}">
+  {% if page.image %}
+    <meta property="og:image" content="{{ page.image }}">
+  {% endif %}
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page.title | default: site.title }}">
+  <meta name="twitter:description" content="{{ desc | strip_html | normalize_whitespace | truncate: 160 }}">
+  {% if page.image %}
+    <meta name="twitter:image" content="{{ page.image }}">
+  {% endif %}
+
+  {%- comment -%}
+  Verifikasi Search Console (isi token Anda di sini jika perlu):
+  <meta name="google-site-verification" content="PASTE_TOKEN_DI_SINI" />
+  {%- endcomment -%}
+
+  <!-- Schema.org WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "{{ site.title | escape }}",
+    "url": "{{ site.url }}{{ site.baseurl }}",
+    "description": "{{ site.description | default: site.title | strip_html | strip_newlines | truncate: 160 }}"
+  }
+  </script>
 </head>
 <body class="theme-light">
   <header class="site-header">
     <div class="container header__inner">
-      <a class="brand" href="{{ '/' | relative_url }}">{{ site.title | default: "Trends Blog" }}</a>
+      <a class="brand" href="{{ site.baseurl | default: '/' | relative_url }}">{{ site.title | default: "Trends Blog" }}</a>
       <nav class="nav">
-        <a href="{{ '/' | relative_url }}">Home</a>
-        <button id="themeToggle" class="toggle">🌙</button>
+        <a href="{{ site.baseurl | append:'/' | relative_url }}">Home</a>
+        <button id="themeToggle" class="toggle" aria-label="Toggle theme">🌙</button>
       </nav>
     </div>
   </header>
@@ -27,18 +91,20 @@
     </div>
   </footer>
 
-<script>
-  const btn = document.getElementById('themeToggle');
-  const root = document.body;
-  const saved = localStorage.getItem('theme');
-  if (saved) root.className = saved;
-  btn.addEventListener('click', () => {
-    root.classList.toggle('theme-dark');
-    root.classList.toggle('theme-light');
-    localStorage.setItem('theme', root.className);
-    btn.textContent = root.classList.contains('theme-dark') ? '☀️' : '🌙';
-  });
-  btn.textContent = root.classList.contains('theme-dark') ? '☀️' : '🌙';
-</script>
+  <!-- Dark mode toggle (persisted) -->
+  <script>
+    const btn = document.getElementById('themeToggle');
+    const root = document.body;
+    const saved = localStorage.getItem('theme');
+    if (saved) root.className = saved;
+    function syncIcon(){ btn.textContent = root.classList.contains('theme-dark') ? '☀️' : '🌙'; }
+    btn.addEventListener('click', () => {
+      root.classList.toggle('theme-dark');
+      root.classList.toggle('theme-light');
+      localStorage.setItem('theme', root.className);
+      syncIcon();
+    });
+    syncIcon();
+  </script>
 </body>
 </html>
