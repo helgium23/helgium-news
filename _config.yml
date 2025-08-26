@@ -1,5 +1,8 @@
 title: Trends Blog
 description: Auto-published trending topics with images
-# theme: minima   # ← hapus atau beri tanda pagar
+lang: id
+url: "https://helgium23.github.io"   # kalau nanti pakai domain sendiri, ganti ke domain itu
+baseurl: "/helgium-news"             # untuk Project Pages (nama repo diawali /)
 plugins:
   - jekyll-feed
+  - jekyll-sitemap
