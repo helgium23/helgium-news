@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ page.title | default: site.title }}</title>
+  <link rel="stylesheet" href="{{ '/assets/css/news.css' | relative_url }}">
+</head>
+<body class="theme-light">
+  <header class="site-header">
+    <div class="container header__inner">
+      <a class="brand" href="{{ '/' | relative_url }}">{{ site.title | default: "Trends Blog" }}</a>
+      <nav class="nav">
+        <a href="{{ '/' | relative_url }}">Home</a>
+        <button id="themeToggle" class="toggle">🌙</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {{ content }}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© {{ site.time | date: '%Y' }} {{ site.title | default: "Trends Blog" }} — Powered by Jekyll & GitHub Pages.</p>
+    </div>
+  </footer>
+
+<script>
+  const btn = document.getElementById('themeToggle');
+  const root = document.body;
+  const saved = localStorage.getItem('theme');
+  if (saved) root.className = saved;
+  btn.addEventListener('click', () => {
+    root.classList.toggle('theme-dark');
+    root.classList.toggle('theme-light');
+    localStorage.setItem('theme', root.className);
+    btn.textContent = root.classList.contains('theme-dark') ? '☀️' : '🌙';
+  });
+  btn.textContent = root.classList.contains('theme-dark') ? '☀️' : '🌙';
+</script>
+</body>
+</html>

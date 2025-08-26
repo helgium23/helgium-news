@@ -1,0 +1,32 @@
+---
+layout: default
+---
+<div class="news-hero">
+  <div class="news-hero__inner">
+    <h1>{{ site.title | default: "Trends Blog" }}</h1>
+    <p>{{ site.description | default: "Latest trending topics, auto-published." }}</p>
+  </div>
+</div>
+
+<div class="news-grid">
+  {%- assign posts_list = site.posts -%}
+  {%- for post in posts_list -%}
+  <article class="card">
+    <a class="card__media" href="{{ post.url | relative_url }}">
+      {%- if post.image -%}
+        <img src="{{ post.image }}" alt="{{ post.title | escape }}">
+      {%- else -%}
+        <div class="card__placeholder" aria-hidden="true"></div>
+      {%- endif -%}
+    </a>
+    <div class="card__body">
+      <h2 class="card__title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+      <div class="card__meta">
+        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+      </div>
+      <p class="card__excerpt">{{ post.excerpt | strip_html | truncate: 160 }}</p>
+      <a class="card__cta" href="{{ post.url | relative_url }}">Baca selengkapnya →</a>
+    </div>
+  </article>
+  {%- endfor -%}
+</div>
